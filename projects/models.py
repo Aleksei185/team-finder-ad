@@ -1,14 +1,22 @@
-from django.db import models
 from django.conf import settings
+from django.db import models
+
+from common.constants import (
+    MAX_LENGTH_PROJECT_NAME,
+    MAX_LENGTH_PROJECT_STATUS,
+    PROJECT_STATUS_OPEN,
+    PROJECT_STATUS_CLOSED,
+)
 
 
 class Project(models.Model):
     STATUS_CHOICES = (
-        ('open', 'Open'),
-        ('closed', 'Closed'),
+        (PROJECT_STATUS_OPEN, 'Открыт'),
+        (PROJECT_STATUS_CLOSED, 'Закрыт'),
     )
+
     name = models.CharField(
-        max_length=200,
+        max_length=MAX_LENGTH_PROJECT_NAME,
         verbose_name='Название проекта'
     )
     description = models.TextField(
@@ -31,9 +39,9 @@ class Project(models.Model):
         verbose_name='GitHub'
     )
     status = models.CharField(
-        max_length=6,
+        max_length=MAX_LENGTH_PROJECT_STATUS,
         choices=STATUS_CHOICES,
-        default='open',
+        default=PROJECT_STATUS_OPEN,
         verbose_name='Статус'
     )
     participants = models.ManyToManyField(

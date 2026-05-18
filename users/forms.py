@@ -1,9 +1,16 @@
-from django import forms
-from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
-from django.core.validators import RegexValidator, URLValidator
-from django.core.exceptions import ValidationError
-from .models import User
+# 1. Стандартные библиотеки
 import re
+
+# 2. Сторонние библиотеки
+from django import forms
+from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
+from django.core.validators import URLValidator
+
+# 3. Модули этого проекта
+from common.constants import PHONE_REGEX
+from common.mixins import GitHubURLMixin
+from .models import User
 
 
 class UserRegistrationForm(forms.ModelForm):
@@ -32,7 +39,7 @@ class UserLoginForm(forms.Form):
     )
 
 
-class UserEditForm(forms.ModelForm):
+class UserEditForm(GitHubURLMixin, forms.ModelForm):
     class Meta:
         model = User
         fields = ('name', 'surname', 'avatar', 'about', 'phone', 'github_url')
@@ -43,14 +50,15 @@ class UserEditForm(forms.ModelForm):
             # Приводим 8... к +7...
             if phone.startswith('8') and len(phone) == 11:
                 phone = '+7' + phone[1:]
+
             # Проверяем формат +7XXXXXXXXXX
-            pattern = r'^\+7\d{10}$'
-            if not re.match(pattern, phone):
+            if not re.match(PHONE_REGEX, phone):
                 raise ValidationError(
                     'Номер телефона должен быть в формате '
                     '+7XXXXXXXXXX (10 цифр после +7)'
                 )
-            # Уникальность
+
+            # Проверка уникальности
             if self.instance and self.instance.pk:
                 if User.objects.exclude(
                     pk=self.instance.pk
@@ -63,19 +71,5 @@ class UserEditForm(forms.ModelForm):
                     raise ValidationError(
                         'Этот номер телефона уже используется'
                     )
-        return phone
 
-    def clean_github_url(self):
-        url = self.cleaned_data.get('github_url')
-        if url:
-            if not url.startswith('http'):
-                url = 'https://' + url
-            try:
-                URLValidator()(url)
-            except ValidationError:
-                raise ValidationError('Введите корректный URL')
-            if 'github.com' not in url:
-                raise ValidationError(
-                    'Ссылка должна вести на GitHub'
-                )
-        return url
+        return phone

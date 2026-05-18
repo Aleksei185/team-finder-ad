@@ -31,7 +31,7 @@
                 {{ project.status }}
             {% endif %}
         </span>
-        {% with count=project.participants.count %}
+        {% with count=project.participants_count %}
         <div class="project-participants">
             {% include 'includes/svg/participants.html' %}
             {{ count }}
