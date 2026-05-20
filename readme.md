@@ -73,12 +73,13 @@ python manage.py runserver
 |------------|------------|
 | `DJANGO_SECRET_KEY` | Секретный ключ Django (можно сгенерировать через `get_random_secret_key`) |
 | `DJANGO_DEBUG` | Режим отладки (`True` для разработки) |
+| `ALLOWED_HOSTS` | Разрешённые хосты (через запятую) | `localhost,127.0.0.1,example.com,www.example.com` |
 | `POSTGRES_DB` | Имя базы данных PostgreSQL |
 | `POSTGRES_USER` | Имя пользователя PostgreSQL |
 | `POSTGRES_PASSWORD` | Пароль пользователя PostgreSQL |
 | `POSTGRES_HOST` | Адрес сервера БД (`localhost` для локальной разработки) |
 | `POSTGRES_PORT` | Порт подключения к БД (по умолчанию `5432`) |
-| `TASK_VERSION` | Номер варианта задания (определяет набор HTML-шаблонов) |
+
 
 ## Контакты автора
 

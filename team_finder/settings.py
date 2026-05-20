@@ -1,6 +1,5 @@
 from pathlib import Path
 from decouple import config
-from django.urls import reverse_lazy
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -12,6 +11,9 @@ _default_hosts = "localhost,127.0.0.1"
 _allowed_hosts_str = config("ALLOWED_HOSTS", default=_default_hosts)
 ALLOWED_HOSTS = [host.strip() for host in _allowed_hosts_str.split(",")]
 
+TASK_VERSION = 2
+# Определяет папку с шаблонами (templates_var2)
+# Поэтому не удалил
 
 # Application definition
 
@@ -37,8 +39,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "team_finder.urls"
-
-TASK_VERSION = 2
 
 TEMPLATES = [
     {
@@ -105,6 +105,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = 'users.User'
 
-LOGIN_URL = reverse_lazy('users:login')
+LOGIN_URL = 'users:login'
 
 FORMS_URLFIELD_ASSUME_HTTPS = True

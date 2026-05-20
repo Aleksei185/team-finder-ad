@@ -12,7 +12,6 @@ from common.constants import (
     AVATAR_ANCHOR_OFFSET,
     AVATAR_BG_COLOR_MAX,
     AVATAR_BG_COLOR_MIN,
-    AVATAR_FONT_PATH,
     AVATAR_FONT_SIZE,
     AVATAR_SIZE,
     AVATAR_TEXT_COLOR,
@@ -113,12 +112,26 @@ class User(AbstractBaseUser, PermissionsMixin):
         image = Image.new('RGB', (AVATAR_SIZE, AVATAR_SIZE), color)
         draw = ImageDraw.Draw(image)
 
+        letter = self.name[0].upper() if self.name else '?'
+
+        # Пытаемся загрузить шрифт (Windows / Linux)
+        font = None
         try:
-            font = ImageFont.truetype(AVATAR_FONT_PATH, AVATAR_FONT_SIZE)
+            font = ImageFont.truetype(
+                "C:/Windows/Fonts/arial.ttf", AVATAR_FONT_SIZE
+            )
         except Exception:
+            try:
+                font = ImageFont.truetype(
+                    "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf",
+                    AVATAR_FONT_SIZE
+                )
+            except Exception:
+                pass
+
+        if font is None:
             font = ImageFont.load_default()
 
-        letter = self.name[0].upper() if self.name else '?'
         bbox = draw.textbbox(
             (AVATAR_ANCHOR_OFFSET, AVATAR_ANCHOR_OFFSET),
             letter,
